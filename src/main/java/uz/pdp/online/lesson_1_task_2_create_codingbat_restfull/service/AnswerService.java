@@ -34,7 +34,6 @@ public class AnswerService {
         answer.setText(answerDto.getText());
         answer.setTask(optionalTask.get());
         answer.setUser(optionalUser.get());
-        answer.setCorrect(answerDto.isCorrect());
         answerRepos.save(answer);
         return new ApiResponse("Ma'lumot saqlandi", true);
     }

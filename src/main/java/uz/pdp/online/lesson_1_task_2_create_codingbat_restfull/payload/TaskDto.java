@@ -29,4 +29,7 @@ public class TaskDto {
 
     @NotNull
     private Integer languageId;
+
+    @NotNull
+    private Integer categoryId;
 }

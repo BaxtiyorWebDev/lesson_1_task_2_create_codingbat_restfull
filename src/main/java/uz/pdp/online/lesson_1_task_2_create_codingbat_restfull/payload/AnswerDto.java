@@ -16,6 +16,4 @@ public class AnswerDto {
     @NotNull
     private Integer userId;
 
-    @NotNull
-    private boolean isCorrect;
 }

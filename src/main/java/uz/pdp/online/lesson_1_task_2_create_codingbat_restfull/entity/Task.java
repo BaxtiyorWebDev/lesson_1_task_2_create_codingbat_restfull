@@ -31,5 +31,5 @@ public class Task {
     private boolean hasStart;
 
     @ManyToOne(optional = false)
-    private Language language;
+    private Category category;
 }

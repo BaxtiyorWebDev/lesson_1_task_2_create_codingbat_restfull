@@ -2,10 +2,11 @@ package uz.pdp.online.lesson_1_task_2_create_codingbat_restfull.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uz.pdp.online.lesson_1_task_2_create_codingbat_restfull.entity.Language;
+import uz.pdp.online.lesson_1_task_2_create_codingbat_restfull.entity.Category;
 import uz.pdp.online.lesson_1_task_2_create_codingbat_restfull.entity.Task;
 import uz.pdp.online.lesson_1_task_2_create_codingbat_restfull.payload.ApiResponse;
 import uz.pdp.online.lesson_1_task_2_create_codingbat_restfull.payload.TaskDto;
+import uz.pdp.online.lesson_1_task_2_create_codingbat_restfull.repository.CategoryRepos;
 import uz.pdp.online.lesson_1_task_2_create_codingbat_restfull.repository.LanguageRepos;
 import uz.pdp.online.lesson_1_task_2_create_codingbat_restfull.repository.TaskRepos;
 
@@ -19,15 +20,16 @@ public class TaskService {
     TaskRepos taskRepos;
     @Autowired
     LanguageRepos languageRepos;
+    @Autowired
+    CategoryRepos categoryRepos;
 
     public ApiResponse addTask(TaskDto taskDto) {
-        boolean existsByNameAndLanguageId = taskRepos.existsByNameAndLanguageId(taskDto.getName(),taskDto.getLanguageId());
-        if (existsByNameAndLanguageId)
+        boolean existsByNameAndCategoryId = taskRepos.existsByNameAndCategoryId(taskDto.getName(),taskDto.getCategoryId());
+        if (existsByNameAndCategoryId)
             return new ApiResponse("Bunday task mavjud",false);
-        Optional<Language> optionalLanguage = languageRepos.findById(taskDto.getLanguageId());
-        if (!optionalLanguage.isPresent())
-            return new ApiResponse("Bunday til topilmadi",false);
-
+        Optional<Category> optionalCategory = categoryRepos.findById(taskDto.getCategoryId());
+        if (!optionalCategory.isPresent())
+            return new ApiResponse("Bunday kategoriya topilmadi",false);
         Task task = new Task();
         task.setName(taskDto.getName());
         task.setText(taskDto.getText());
@@ -36,7 +38,7 @@ public class TaskService {
         task.setAnswer(taskDto.getAnswer());
         task.setMethod(taskDto.getMethod());
         task.setHasStart(taskDto.isHasStart());
-        task.setLanguage(optionalLanguage.get());
+        task.setCategory(optionalCategory.get());
         taskRepos.save(task);
         return new ApiResponse("Ma'lumot saqlandi",true);
     }
@@ -52,13 +54,12 @@ public class TaskService {
     }
 
     public ApiResponse editTask(Integer id, TaskDto taskDto) {
-        boolean existsByNameAndLanguageIdAndIdNot = taskRepos.existsByNameAndLanguageIdAndIdNot(taskDto.getName(),taskDto.getLanguageId(), id);
-        if (existsByNameAndLanguageIdAndIdNot)
+        boolean existsByNameAndCategoryIdAndIdNot = taskRepos.existsByNameAndCategoryIdAndIdNot(taskDto.getName(),taskDto.getCategoryId(), id);
+        if (existsByNameAndCategoryIdAndIdNot)
             return new ApiResponse("Bunday task mavjud",false);
-        Optional<Language> optionalLanguage = languageRepos.findById(taskDto.getLanguageId());
-        if (!optionalLanguage.isPresent())
-            return new ApiResponse("Bunday til topilmadi",false);
-
+        Optional<Category> optionalCategory = categoryRepos.findById(taskDto.getCategoryId());
+        if (!optionalCategory.isPresent())
+            return new ApiResponse("Bunday kategoriya topilmadi",false);
 
         Optional<Task> optionalTask = taskRepos.findById(id);
         Task editingTask = optionalTask.get();
@@ -69,7 +70,7 @@ public class TaskService {
         editingTask.setAnswer(taskDto.getAnswer());
         editingTask.setMethod(taskDto.getMethod());
         editingTask.setHasStart(taskDto.isHasStart());
-        editingTask.setLanguage(optionalLanguage.get());
+        editingTask.setCategory(optionalCategory.get());
         taskRepos.save(editingTask);
         return new ApiResponse("Ma'lumot saqlandi",true);
     }
